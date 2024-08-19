@@ -1,15 +1,12 @@
 import {GameObject} from "../game/GameObject.js"
 import {Vector2D} from "../Vector2D.js"
 import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js";
-
-const logicPosCount = 5
-const horizontalPadding = 0.1
+import {config} from "./Config.js";
 
 export class Player extends GameObject {
     #logicPos
     #targetPos
     #pos
-    #sizeX
     #spriteSize
     #spriteSizeRatio
     constructor() {
@@ -17,7 +14,6 @@ export class Player extends GameObject {
         this.#logicPos = 0
         this.#targetPos = 0
         this.#pos = 0
-        this.#sizeX = 0.1
         this.#spriteSize = new Vector2D(50, 100)
         this.#spriteSizeRatio = this.#spriteSize.y / this.#spriteSize.x
     }
@@ -30,8 +26,8 @@ export class Player extends GameObject {
         this.#logicMove(-1)
     }
     #logicMove(direction) {
-        this.#logicPos = Math.min(Math.max(this.#logicPos + direction, 0), logicPosCount - 1)
-        this.#targetPos = this.#logicPos * (1 / (logicPosCount - 1))
+        this.#logicPos = Math.min(Math.max(this.#logicPos + direction, 0), config.positinCount - 1)
+        this.#targetPos = this.#logicPos * (1 / (config.positinCount - 1))
     }
     
     update(dt) {
@@ -47,9 +43,9 @@ export class Player extends GameObject {
         const pos = fromRelativeVector(
             ctx,
             new Vector2D(this.#pos, 1),
-            new Vector2D(0.1, 0.05)
+            config.padding
         )
-        const sizeX = fromRelativeX(ctx, this.#sizeX)
+        const sizeX = fromRelativeX(ctx, config.playerSizeX)
         const size = new Vector2D(
             sizeX,
             sizeX * this.#spriteSizeRatio
