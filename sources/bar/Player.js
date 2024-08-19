@@ -4,19 +4,11 @@ import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js";
 import {config} from "./Config.js";
 
 export class Player extends GameObject {
-    #logicPos
-    #targetPos
-    #pos
-    #spriteSize
-    #spriteSizeRatio
-    constructor() {
-        super();
-        this.#logicPos = 0
-        this.#targetPos = 0
-        this.#pos = 0
-        this.#spriteSize = new Vector2D(50, 100)
-        this.#spriteSizeRatio = this.#spriteSize.y / this.#spriteSize.x
-    }
+    #logicPos = 0
+    #targetPos = 0
+    #spriteSize = new Vector2D(50, 100)
+    #spriteSizeRatio = this.#spriteSize.y / this.#spriteSize.x
+    pos = new Vector2D(0, 1)
     
     moveRight() {
         this.#logicMove(1)
@@ -32,8 +24,8 @@ export class Player extends GameObject {
     
     update(dt) {
         super.update(dt)
-        let diff = this.#targetPos - this.#pos
-        this.#pos += diff * (dt/100)
+        let diff = this.#targetPos - this.pos.x
+        this.pos.x += diff * (dt/100)
         
     }
 
@@ -42,7 +34,7 @@ export class Player extends GameObject {
         
         const pos = fromRelativeVector(
             ctx,
-            new Vector2D(this.#pos, 1),
+            this.pos,
             config.padding
         )
         const sizeX = fromRelativeX(ctx, config.playerSizeX)
