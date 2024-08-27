@@ -4,7 +4,7 @@ import {Player} from "./Player.js"
 import {Item} from "./Item.js"
 import {randomInt} from "../RandomInt.js"
 import {config} from "./Config.js"
-
+import {R} from "./R.js"
 
 const aspectFillRectToBottom = (rect1, rect2) => {
     const aspectRatio = rect1.width / rect1.height;
@@ -36,29 +36,51 @@ export class BarGame extends Game {
     initialize() {
         super.initialize()
         this.setupCanvas()
-        this.setupImage()
-        this.player = new Player()
-        this.item = new Item()
-        this.gameObjects.push(this.player)
-        this.gameObjects.push(this.item)
+        this.setupImages()
         this.setupControls()
     }
 
-    setupImage() {
+    setupImages() {
         const img = new Image()
         img.onload = () => {
             this.backgroundImage = img
             this.resizeCanvas()
         }
-        img.src = 'sources/bar/resources/background.png';
+        img.src = 'sources/bar/resources/background.png'
+
+        const allLoaded = () => {
+            this.start()
+        }
+        const imagesToLoad = {
+            bg: 'sources/bar/resources/background.png',
+            player: 'sources/bar/resources/player_run_right.png'
+        }
+        const keys = Object.keys(imagesToLoad)
+        let loaded = 0
+        for (const key of keys) {
+            R[key] = new Image()
+            R[key].src = imagesToLoad[key]
+            R[key].onload = () => {
+                loaded += 1
+                if (loaded === keys.length) {
+                    allLoaded()
+                }
+            }
+        }
     }
     start() {
         super.start()
+        this.gameObjects = []
+        this.player = new Player()
+        this.item = new Item()
+        this.gameObjects.push(this.player)
+        this.gameObjects.push(this.item)
+
         setInterval(() => {
             this.item.spawnAtLogicPos(randomInt(0, config.positinCount - 1))
         }, config.itemLifeTime)
     }
-    
+
     render() {
         this.#renderBackground()
         super.render()

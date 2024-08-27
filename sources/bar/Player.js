@@ -1,15 +1,18 @@
 import {GameObject} from "../game/GameObject.js"
 import {Vector2D} from "../Vector2D.js"
-import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js";
-import {config} from "./Config.js";
+import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js"
+import {config} from "./Config.js"
+import {Sprite} from "../game/Sprite.js"
+import {R} from "./R.js"
 
 export class Player extends GameObject {
     #logicPos = 0
     #targetPos = 0
-    #spriteSize = new Vector2D(50, 100)
+    #spriteSize = new Vector2D(100, 100)
     #spriteSizeRatio = this.#spriteSize.y / this.#spriteSize.x
     pos = new Vector2D(0, 1)
-    
+    sprite = new Sprite(R.player, new Vector2D(256, 256), 19)
+
     moveRight() {
         this.#logicMove(1)
     }
@@ -24,9 +27,19 @@ export class Player extends GameObject {
     
     update(dt) {
         super.update(dt)
+        this.sprite.update(dt)
         let diff = this.#targetPos - this.pos.x
-        this.pos.x += diff * (dt/100)
-        
+        const move = diff * (dt/100)
+        this.pos.x += move
+
+        if (Math.abs(diff) > 0.001) {
+            this.sprite.isFlipped = diff < 0
+            if (!this.sprite.isAnimationStarted) {
+                this.sprite.startAnimation()
+            }
+        } else {
+            this.sprite.stopAnimation()
+        }
     }
 
     render(ctx) {
@@ -42,16 +55,12 @@ export class Player extends GameObject {
             sizeX,
             sizeX * this.#spriteSizeRatio
         )
-
-        ctx.beginPath()
-        ctx.rect(
+        this.sprite.render(
+            ctx,
             pos.x - size.x / 2,
             pos.y - size.y,
             size.x,
             size.y
         )
-        ctx.closePath()
-        ctx.fillStyle = "red"
-        ctx.fill()
     }
 }
