@@ -7,5 +7,6 @@ export const config = {
     positinCount: 4,
     itemLifeTime: 1500,
     itemsCount: 3,
-    itemsSpawnsPerSecond: 2
+    itemsSpawnsPerSecond: 2,
+    distanceToCollect: 0.2
 }

@@ -37,7 +37,6 @@ export class Sprite {
     render(ctx, x, y, width, height) {
         const frameX = (this.currentFrame % this.framesPerRow) * this.frameSize.x
         const frameY = parseInt(this.currentFrame / this.framesPerRow) * this.frameSize.y
-        console.log(frameX, frameY)
         
         ctx.save()
         ctx.scale(this.isFlipped ? -1 : 1, 1)

@@ -85,12 +85,27 @@ export class BarGame extends Game {
             this.gameObjects.push(item)
         }
         const spawnInterval = 1000 / config.itemsSpawnsPerSecond
+        this.items = items
 
         setInterval(() => {
             const nextItem = items[items.findIndex((item => !item.isActive))]
             if (!nextItem) { return }
             nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1))
         }, spawnInterval)
+    }
+
+    update(dt) {
+        super.update(dt)
+        for (const item of this.items) {
+            if (item.pos.distanceTo(this.player.pos) < config.distanceToCollect && item.isActive) {
+                item.isActive = false
+                this.collected(item)
+            }
+        }
+    }
+
+    collected(item) {
+        console.log("Collected")
     }
 
     render() {
