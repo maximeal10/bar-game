@@ -6,11 +6,12 @@ import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js"
 export class Item extends GameObject {
     isActive = false
     #posY = 0
-    #spriteSize = new Vector2D(25, 25)
+    #spriteSize = new Vector2D(128, 128)
     #spriteSizeRatio = this.#spriteSize.y / this.#spriteSize.x
     pos = new Vector2D(0, 0)
     
-    spawnAtLogicPos(pos) {
+    spawnAtLogicPos(pos, content) {
+        this.content = content
         this.pos.x  = pos * (1 / (config.positinCount - 1))
         this.pos.y = -config.padding.y
         this.isActive = true
@@ -27,7 +28,7 @@ export class Item extends GameObject {
     
     render(ctx) {
         super.render(ctx)
-        if (!this.isActive) return
+        if (!this.isActive || !this.content) return
         
         const pos = fromRelativeVector(
             ctx,
@@ -40,15 +41,12 @@ export class Item extends GameObject {
             sizeX * this.#spriteSizeRatio
         )
 
-        ctx.beginPath()
-        ctx.rect(
+        this.content.sprite.render(
+            ctx,
             pos.x - size.x / 2,
-            pos.y - size.y,
+            pos.y - size.y / 2,
             size.x,
             size.y
         )
-        ctx.closePath()
-        ctx.fillStyle = "red"
-        ctx.fill()
     }
 }

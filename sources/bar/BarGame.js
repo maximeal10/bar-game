@@ -5,6 +5,8 @@ import {Item} from "./Item.js"
 import {randomInt} from "../RandomInt.js"
 import {config} from "./Config.js"
 import {R} from "./R.js"
+import {ItemContent} from "./ItemContent/ItemContent.js"
+import {Sprite} from "../game/Sprite.js"
 
 const aspectFillRectToBottom = (rect1, rect2) => {
     const aspectRatio = rect1.width / rect1.height;
@@ -53,7 +55,9 @@ export class BarGame extends Game {
         }
         const imagesToLoad = {
             bg: 'sources/bar/resources/background.png',
-            player: 'sources/bar/resources/player_run_right.png'
+            player: 'sources/bar/resources/player_run_right.png',
+            glass1: 'sources/bar/resources/glass1.png',
+            glass2: 'sources/bar/resources/glass2.png',
         }
         const keys = Object.keys(imagesToLoad)
         let loaded = 0
@@ -73,8 +77,23 @@ export class BarGame extends Game {
         this.gameObjects = []
         this.player = new Player()
         this.gameObjects.push(this.player)
-
+        this.setupItemContents()
         this.setupItems()
+    }
+
+    setupItemContents() {
+        this.itemContentPool = [
+            new ItemContent(
+                "glass1",
+                ItemContent.Type.glass,
+                new Sprite(R.glass1, new Vector2D(256, 256))
+            ),
+            new ItemContent(
+                "glass2",
+                ItemContent.Type.glass,
+                new Sprite(R.glass2, new Vector2D(256, 256))
+            )
+        ]
     }
 
     setupItems() {
@@ -90,7 +109,8 @@ export class BarGame extends Game {
         setInterval(() => {
             const nextItem = items[items.findIndex((item => !item.isActive))]
             if (!nextItem) { return }
-            nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1))
+            const content = this.itemContentPool[randomInt(0, this.itemContentPool.length - 1)]
+            nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1), content)
         }, spawnInterval)
     }
 
