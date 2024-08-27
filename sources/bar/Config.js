@@ -5,5 +5,7 @@ export const config = {
     playerSizeX: 0.30,
     itemSizeX: 0.05,
     positinCount: 4,
-    itemLifeTime: 1500
+    itemLifeTime: 1500,
+    itemsCount: 3,
+    itemsSpawnsPerSecond: 2
 }

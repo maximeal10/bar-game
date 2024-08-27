@@ -72,13 +72,25 @@ export class BarGame extends Game {
         super.start()
         this.gameObjects = []
         this.player = new Player()
-        this.item = new Item()
         this.gameObjects.push(this.player)
-        this.gameObjects.push(this.item)
+
+        this.setupItems()
+    }
+
+    setupItems() {
+        let items = []
+        for (let i = 0 ; i < config.itemsCount ; i += 1) {
+            const item = new Item()
+            items.push(item)
+            this.gameObjects.push(item)
+        }
+        const spawnInterval = 1000 / config.itemsSpawnsPerSecond
 
         setInterval(() => {
-            this.item.spawnAtLogicPos(randomInt(0, config.positinCount - 1))
-        }, config.itemLifeTime)
+            const nextItem = items[items.findIndex((item => !item.isActive))]
+            if (!nextItem) { return }
+            nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1))
+        }, spawnInterval)
     }
 
     render() {
