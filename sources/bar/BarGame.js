@@ -7,6 +7,7 @@ import {config} from "./Config.js"
 import {R} from "./R.js"
 import {ItemContent} from "./ItemContent/ItemContent.js"
 import {Sprite} from "../game/Sprite.js"
+import {Cocktail} from "./Cocktail.js"
 
 const aspectFillRectToBottom = (rect1, rect2) => {
     const aspectRatio = rect1.width / rect1.height;
@@ -79,21 +80,48 @@ export class BarGame extends Game {
         this.gameObjects.push(this.player)
         this.setupItemContents()
         this.setupItems()
+        this.setupTargetCocktail()
+        this.setupPlayerCocktail()
+        this.updateTargetCocktail()
     }
 
     setupItemContents() {
-        this.itemContentPool = [
+        this.glasses = [
             new ItemContent(
                 "glass1",
                 ItemContent.Type.glass,
-                new Sprite(R.glass1, new Vector2D(256, 256))
+                new Sprite(R.glass1, new Vector2D(256, 256)),
+                new Sprite(R.glass1, new Vector2D(256, 256)),
             ),
             new ItemContent(
                 "glass2",
                 ItemContent.Type.glass,
-                new Sprite(R.glass2, new Vector2D(256, 256))
+                new Sprite(R.glass2, new Vector2D(256, 256)),
+                new Sprite(R.glass2, new Vector2D(256, 256)),
             )
         ]
+        this.liquids = []
+        this.toppings = []
+        this.itemContentPool = [
+            ...this.glasses,
+            ...this.liquids,
+            ...this.toppings
+        ]
+    }
+
+    setupTargetCocktail() {
+        this.targetCocktail = new Cocktail(new Vector2D(0, -0.05))
+        this.gameObjects.push(this.targetCocktail)
+    }
+
+    setupPlayerCocktail() {
+        this.playerCocktail = new Cocktail(new Vector2D(1, -0.05))
+        this.gameObjects.push(this.playerCocktail)
+    }
+
+    updateTargetCocktail() {
+        this.targetCocktail.reset()
+        this.targetCocktail.glass = this.glasses[randomInt(0, this.glasses.length-1)]
     }
 
     setupItems() {
@@ -125,7 +153,13 @@ export class BarGame extends Game {
     }
 
     collected(item) {
-        console.log("Collected")
+        this.playerCocktail.addCollectedContent(item.content)
+        if (!this.playerCocktail.isSimilarTo(this.targetCocktail)) {
+            this.playerCocktail.reset()
+            console.log("wrong item")
+        } else {
+            console.log("right item")
+        }
     }
 
     render() {

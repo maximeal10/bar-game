@@ -1,8 +1,9 @@
 export class ItemContent {
-    constructor(id, type, sprite) {
+    constructor(id, type, spriteFalling, spriteUI) {
         this.id = id
         this.type = type
-        this.sprite = sprite
+        this.spriteFalling = spriteFalling
+        this.spriteUI = spriteUI
     }
 }
 

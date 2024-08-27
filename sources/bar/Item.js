@@ -13,7 +13,7 @@ export class Item extends GameObject {
     spawnAtLogicPos(pos, content) {
         this.content = content
         this.pos.x  = pos * (1 / (config.positinCount - 1))
-        this.pos.y = -config.padding.y
+        this.pos.y = 0.05
         this.isActive = true
     }
     
@@ -41,7 +41,7 @@ export class Item extends GameObject {
             sizeX * this.#spriteSizeRatio
         )
 
-        this.content.sprite.render(
+        this.content.spriteFalling.render(
             ctx,
             pos.x - size.x / 2,
             pos.y - size.y / 2,
