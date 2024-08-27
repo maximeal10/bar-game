@@ -3,11 +3,16 @@ import {ItemContent} from "./ItemContent/ItemContent.js"
 import {config} from "./Config.js";
 import {fromRelativeVector, fromRelativeX} from "../ScreenAdapter.js";
 import {Vector2D} from "../Vector2D.js"
+import {Sprite} from "../game/Sprite.js"
+import {R} from "./R.js"
 
 export class Cocktail extends  GameObject {
     glass = null
     liquid = null
     topping = null
+
+    #liquidSprite
+    #toppingSprite
     constructor(pos, glass, liquid, topping) {
         super();
         this.pos = pos
@@ -19,6 +24,7 @@ export class Cocktail extends  GameObject {
     addCollectedContent(itemContent) {
         if (!this.#canAddContent(itemContent)) {
             this.reset()
+            this.setupSprites()
             return
         }
         switch (itemContent.type) {
@@ -32,6 +38,7 @@ export class Cocktail extends  GameObject {
                 this.topping = itemContent
                 break
         }
+        this.setupSprites()
     }
     
     #canAddContent(itemContent) {
@@ -73,6 +80,24 @@ export class Cocktail extends  GameObject {
         return this.glass != null
     }
     
+    get isComplete() {
+        return !!this.glass && !!this.liquid && !!this.topping
+    }
+
+    setupSprites() {
+        if (this.liquid) {
+            this.#liquidSprite = new Sprite(R[`${this.glass.id}_${this.liquid.id}_ui`], new Vector2D(256, 256))
+        } else {
+            this.#liquidSprite = null
+        }
+
+        if (this.topping) {
+            this.#toppingSprite = new Sprite(R[`${this.glass.id}_${this.topping.id}_ui`], new Vector2D(256, 256))
+        } else {
+            this.#toppingSprite = null
+        }
+    }
+
     render(ctx) {
         super.render(ctx)
         
@@ -89,6 +114,26 @@ export class Cocktail extends  GameObject {
 
         if (this.glass) {
             this.glass.spriteUI.render(
+                ctx,
+                pos.x - size.x / 2,
+                pos.y - size.y / 2,
+                size.x,
+                size.y
+            )
+        }
+
+        if (this.#liquidSprite) {
+            this.#liquidSprite.render(
+                ctx,
+                pos.x - size.x / 2,
+                pos.y - size.y / 2,
+                size.x,
+                size.y
+            )
+        }
+
+        if (this.#toppingSprite) {
+            this.#toppingSprite.render(
                 ctx,
                 pos.x - size.x / 2,
                 pos.y - size.y / 2,

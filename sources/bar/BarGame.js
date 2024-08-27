@@ -57,8 +57,34 @@ export class BarGame extends Game {
         const imagesToLoad = {
             bg: 'sources/bar/resources/background.png',
             player: 'sources/bar/resources/player_run_right.png',
-            glass1: 'sources/bar/resources/glass1.png',
-            glass2: 'sources/bar/resources/glass2.png',
+            // glass 1
+            glass1: 'sources/bar/resources/glass1_falling.png',
+            glass1_liquid1_ui: 'sources/bar/resources/glass1_liquid1_ui.png',
+            glass1_liquid2_ui: 'sources/bar/resources/glass1_liquid2_ui.png',
+            glass1_liquid3_ui: 'sources/bar/resources/glass1_liquid3_ui.png',
+            glass1_topping1_ui: 'sources/bar/resources/glass1_topping1_ui.png',
+            glass1_topping2_ui: 'sources/bar/resources/glass1_topping2_ui.png',
+            // glass 2
+            glass2: 'sources/bar/resources/glass2_falling.png',
+            glass2_liquid1_ui: 'sources/bar/resources/glass2_liquid1_ui.png',
+            glass2_liquid2_ui: 'sources/bar/resources/glass2_liquid2_ui.png',
+            glass2_liquid3_ui: 'sources/bar/resources/glass2_liquid3_ui.png',
+            glass2_topping1_ui: 'sources/bar/resources/glass2_topping1_ui.png',
+            glass2_topping2_ui: 'sources/bar/resources/glass2_topping2_ui.png',
+            // glass 3
+            glass3: 'sources/bar/resources/glass3_falling.png',
+            glass3_liquid1_ui: 'sources/bar/resources/glass3_liquid1_ui.png',
+            glass3_liquid2_ui: 'sources/bar/resources/glass3_liquid2_ui.png',
+            glass3_liquid3_ui: 'sources/bar/resources/glass3_liquid3_ui.png',
+            glass3_topping1_ui: 'sources/bar/resources/glass3_topping1_ui.png',
+            glass3_topping2_ui: 'sources/bar/resources/glass3_topping2_ui.png',
+            // liquids
+            liquid1: 'sources/bar/resources/liquid1_falling.png',
+            liquid2: 'sources/bar/resources/liquid2_falling.png',
+            liquid3: 'sources/bar/resources/liquid3_falling.png',
+            // topping
+            topping1: 'sources/bar/resources/topping1_falling.png',
+            topping2: 'sources/bar/resources/topping2_falling.png',
         }
         const keys = Object.keys(imagesToLoad)
         let loaded = 0
@@ -98,10 +124,48 @@ export class BarGame extends Game {
                 ItemContent.Type.glass,
                 new Sprite(R.glass2, new Vector2D(256, 256)),
                 new Sprite(R.glass2, new Vector2D(256, 256)),
+            ),
+            new ItemContent(
+                "glass3",
+                ItemContent.Type.glass,
+                new Sprite(R.glass3, new Vector2D(256, 256)),
+                new Sprite(R.glass3, new Vector2D(256, 256)),
             )
         ]
-        this.liquids = []
-        this.toppings = []
+        this.liquids = [
+            new ItemContent(
+                "liquid1",
+                ItemContent.Type.liquid,
+                new Sprite(R.liquid1, new Vector2D(256, 256)),
+                null
+            ),
+            new ItemContent(
+                "liquid2",
+                ItemContent.Type.liquid,
+                new Sprite(R.liquid2, new Vector2D(256, 256)),
+                null
+            ),
+            new ItemContent(
+                "liquid3",
+                ItemContent.Type.liquid,
+                new Sprite(R.liquid3, new Vector2D(256, 256)),
+                null
+            )
+        ]
+        this.toppings = [
+            new ItemContent(
+                "topping1",
+                ItemContent.Type.topping,
+                new Sprite(R.topping1, new Vector2D(256, 256)),
+                null
+            ),
+            new ItemContent(
+                "topping2",
+                ItemContent.Type.topping,
+                new Sprite(R.topping2, new Vector2D(256, 256)),
+                null
+            )
+        ]
         this.itemContentPool = [
             ...this.glasses,
             ...this.liquids,
@@ -122,6 +186,9 @@ export class BarGame extends Game {
     updateTargetCocktail() {
         this.targetCocktail.reset()
         this.targetCocktail.glass = this.glasses[randomInt(0, this.glasses.length-1)]
+        this.targetCocktail.liquid = this.liquids[randomInt(0, this.liquids.length-1)]
+        this.targetCocktail.topping = this.toppings[randomInt(0, this.toppings.length-1)]
+        this.targetCocktail.setupSprites()
     }
 
     setupItems() {
@@ -153,12 +220,18 @@ export class BarGame extends Game {
     }
 
     collected(item) {
+        if (this.playerCocktail.isComplete) {
+            this.playerCocktail.reset()
+        }
         this.playerCocktail.addCollectedContent(item.content)
         if (!this.playerCocktail.isSimilarTo(this.targetCocktail)) {
             this.playerCocktail.reset()
             console.log("wrong item")
         } else {
             console.log("right item")
+        }
+        if (this.playerCocktail.isComplete) {
+            this.updateTargetCocktail()
         }
     }
 
