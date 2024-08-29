@@ -52,6 +52,7 @@ export class BarGame extends Game {
             bg2: 'sources/bar/resources/bg2.jpg',
             player: 'sources/bar/resources/player_run_right.png',
             paper: 'sources/bar/resources/paper.png',
+            panic: 'sources/bar/resources/panic.png',
             // glass 1
             glass1: 'sources/bar/resources/glass1_falling.png',
             glass1_liquid1_ui: 'sources/bar/resources/glass1_liquid1_ui.png',
@@ -165,7 +166,13 @@ export class BarGame extends Game {
         this.itemContentPool = [
             ...this.glasses,
             ...this.liquids,
-            ...this.toppings
+            ...this.toppings,
+            new ItemContent(
+                "panic",
+                "panic",
+                new Sprite(R.panic, new Vector2D(256, 256)),
+                null
+            )
         ]
     }
 
@@ -188,21 +195,24 @@ export class BarGame extends Game {
     }
 
     setupItems() {
-        let items = []
+        this.items = []
         for (let i = 0 ; i < config.itemsCount ; i += 1) {
             const item = new Item()
-            items.push(item)
+            this.items.push(item)
             this.gameObjects.push(item)
         }
-        const spawnInterval = 1000 / config.itemsSpawnsPerSecond
-        this.items = items
+        this.#itemSpawnLoop()
+    }
 
-        setInterval(() => {
-            const nextItem = items[items.findIndex((item => !item.isActive))]
-            if (!nextItem) { return }
-            const content = this.itemContentPool[randomInt(0, this.itemContentPool.length - 1)]
-            nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1), content)
-        }, spawnInterval)
+    #itemSpawnLoop() {
+        setTimeout(() => {
+            this.#itemSpawnLoop()
+        }, 1000 / config.itemsSpawnsPerSecond)
+
+        const nextItem = this.items[this.items.findIndex((item => !item.isActive))]
+        if (!nextItem) { return }
+        const content = this.itemContentPool[randomInt(0, this.itemContentPool.length - 1)]
+        nextItem.spawnAtLogicPos(randomInt(0, config.positinCount - 1), content)
     }
 
     update(dt) {
@@ -222,7 +232,15 @@ export class BarGame extends Game {
     #madeCocktails = []
 
     #isCheatActive = false
+    #panicTimeout = null
     collected(item) {
+        if (item.content.id === "panic") {
+            config.isPanicActive = true
+            this.#panicTimeout = setTimeout(() => {
+                config.isPanicActive = false
+            }, config.panicTime)
+            return
+        }
 
         if (this.#isCheatActive) {
             this.playerCocktail.glass = this.targetCocktail.glass
