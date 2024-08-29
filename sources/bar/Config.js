@@ -7,8 +7,8 @@ export const config = {
     itemSizeX: 0.2,
     itemUISizeX: 0.3,
     positinCount: 4,
-    itemLifeTime: 1500,
+    itemLifeTime: 1800,
     itemsCount: 3,
-    itemsSpawnsPerSecond: 2,
+    itemsSpawnsPerSecond: 1.2,
     distanceToCollect: 0.2
 }
