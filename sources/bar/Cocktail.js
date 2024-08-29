@@ -24,7 +24,6 @@ export class Cocktail extends  GameObject {
     addCollectedContent(itemContent) {
         if (!this.#canAddContent(itemContent)) {
             this.reset()
-            this.setupSprites()
             return
         }
         switch (itemContent.type) {
@@ -56,6 +55,7 @@ export class Cocktail extends  GameObject {
         this.glass = null
         this.liquid = null
         this.topping = null
+        this.setupSprites()
     }
     
     isSimilarTo(targetCocktail) {
