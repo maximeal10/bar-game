@@ -51,6 +51,7 @@ export class BarGame extends Game {
             bg1: 'sources/bar/resources/bg1.jpg',
             bg2: 'sources/bar/resources/bg2.jpg',
             player: 'sources/bar/resources/player_run_right.png',
+            paper: 'sources/bar/resources/paper.png',
             // glass 1
             glass1: 'sources/bar/resources/glass1_falling.png',
             glass1_liquid1_ui: 'sources/bar/resources/glass1_liquid1_ui.png',
@@ -169,12 +170,12 @@ export class BarGame extends Game {
     }
 
     setupTargetCocktail() {
-        this.targetCocktail = new Cocktail(new Vector2D(0, -0.05))
+        this.targetCocktail = new Cocktail(new Vector2D(0, -0.02), config.itemUISizeX, true)
         this.gameObjects.push(this.targetCocktail)
     }
 
     setupPlayerCocktail() {
-        this.playerCocktail = new Cocktail(new Vector2D(1, -0.05))
+        this.playerCocktail = new Cocktail(new Vector2D(1, -0.02), config.itemUISizeX)
         this.gameObjects.push(this.playerCocktail)
     }
 

@@ -13,9 +13,12 @@ export class Cocktail extends  GameObject {
 
     #liquidSprite
     #toppingSprite
-    constructor(pos, glass, liquid, topping) {
+    #paperSprite = new Sprite(R.paper, new Vector2D(256, 256))
+    constructor(pos, sizeX, withPaper, glass, liquid, topping) {
         super();
+        this.sizeX = sizeX
         this.pos = pos
+        this.withPaper = withPaper || false
         this.glass = glass || null
         this.liquid = liquid || null
         this.topping = topping || null
@@ -106,11 +109,21 @@ export class Cocktail extends  GameObject {
             this.pos,
             config.padding
         )
-        const sizeX = fromRelativeX(ctx, config.itemUISizeX)
+        const sizeX = fromRelativeX(ctx, this.sizeX)
         const size = new Vector2D(
             sizeX,
             sizeX
         )
+
+        if (this.withPaper) {
+            this.#paperSprite.render(
+                ctx,
+                pos.x - size.x / 2,
+                pos.y - size.y / 2,
+                size.x,
+                size.y
+            )
+        }
 
         if (this.#toppingSprite) {
             this.#toppingSprite.render(
