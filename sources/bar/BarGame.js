@@ -34,7 +34,6 @@ const aspectFillRectToBottom = (rect1, rect2) => {
 
 export class BarGame extends Game {
     
-    backgroundImage = null
     backgroundRect = null
     initialize() {
         super.initialize()
@@ -44,18 +43,12 @@ export class BarGame extends Game {
     }
 
     setupImages() {
-        const img = new Image()
-        img.onload = () => {
-            this.backgroundImage = img
-            this.resizeCanvas()
-        }
-        img.src = 'sources/bar/resources/background.png'
-
         const allLoaded = () => {
+            this.resizeCanvas()
             this.start()
         }
         const imagesToLoad = {
-            bg: 'sources/bar/resources/background.png',
+            bg: 'sources/bar/resources/background.jpg',
             player: 'sources/bar/resources/player_run_right.png',
             // glass 1
             glass1: 'sources/bar/resources/glass1_falling.png',
@@ -242,9 +235,9 @@ export class BarGame extends Game {
 
     #renderBackground() {
         const ctx = this.ctx
-        if (this.backgroundImage == null || this.backgroundRect == null) return
+        if (!R.bg || this.backgroundRect == null) return
         ctx.drawImage(
-            this.backgroundImage,
+            R.bg,
             this.backgroundRect.x,
             this.backgroundRect.y,
             this.backgroundRect.width,
@@ -264,9 +257,9 @@ export class BarGame extends Game {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
 
-        if (this.backgroundImage == null) return
+        if (!R.bg) return
         this.backgroundRect = aspectFillRectToBottom(
-            {x: 0, y: 0, width: this.backgroundImage.width, height: this.backgroundImage.height},
+            {x: 0, y: 0, width: R.bg.width, height: R.bg.height},
             {x: 0, y: 0, width: this.canvas.width, height: this.canvas.height}
         )
     }
