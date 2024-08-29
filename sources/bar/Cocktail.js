@@ -112,6 +112,16 @@ export class Cocktail extends  GameObject {
             sizeX
         )
 
+        if (this.#toppingSprite) {
+            this.#toppingSprite.render(
+                ctx,
+                pos.x - size.x / 2,
+                pos.y - size.y / 2,
+                size.x,
+                size.y
+            )
+        }
+
         if (this.glass) {
             this.glass.spriteUI.render(
                 ctx,
@@ -132,14 +142,5 @@ export class Cocktail extends  GameObject {
             )
         }
 
-        if (this.#toppingSprite) {
-            this.#toppingSprite.render(
-                ctx,
-                pos.x - size.x / 2,
-                pos.y - size.y / 2,
-                size.x,
-                size.y
-            )
-        }
     }
 }
