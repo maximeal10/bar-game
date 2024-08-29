@@ -182,7 +182,13 @@ export class BarGame extends Game {
     }
 
     setupPlayerCocktail() {
-        this.playerCocktail = new Cocktail(new Vector2D(1, -0.02), config.itemUISizeX)
+        this.playerCocktail = new Cocktail(
+            new Vector2D(
+                0 - config.padding.x + config.itemSizeX / 5,
+                1 + config.padding.y - config.itemSizeX / 5
+            ),
+            config.itemSizeX
+        )
         this.gameObjects.push(this.playerCocktail)
     }
 
@@ -270,7 +276,7 @@ export class BarGame extends Game {
             const cocktail = this.#madeCocktails[cocktailIndex]
             cocktail.sizeX = config.itemSizeX
             cocktail.targetPos = new Vector2D(
-                cocktail.sizeX * cocktailIndex - config.padding.x + cocktail.sizeX / 5,
+                cocktail.sizeX * (parseInt(cocktailIndex) + 1) - config.padding.x + cocktail.sizeX / 5,
                 1 + config.padding.y - cocktail.sizeX / 5
             )
         }
