@@ -1,6 +1,7 @@
 import {Vector2D} from "../Vector2D.js"
 
 export const config = {
+    backgroundInterval: 20000,
     padding: new Vector2D(0.2, 0.12),
     playerSizeX: 0.30,
     itemSizeX: 0.2,

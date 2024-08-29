@@ -48,7 +48,8 @@ export class BarGame extends Game {
             this.start()
         }
         const imagesToLoad = {
-            bg: 'sources/bar/resources/background.jpg',
+            bg1: 'sources/bar/resources/bg1.jpg',
+            bg2: 'sources/bar/resources/bg2.jpg',
             player: 'sources/bar/resources/player_run_right.png',
             // glass 1
             glass1: 'sources/bar/resources/glass1_falling.png',
@@ -94,6 +95,7 @@ export class BarGame extends Game {
     }
     start() {
         super.start()
+        this.startTime = Date.now()
         this.gameObjects = []
         this.player = new Player()
         this.gameObjects.push(this.player)
@@ -235,14 +237,25 @@ export class BarGame extends Game {
 
     #renderBackground() {
         const ctx = this.ctx
-        if (!R.bg || this.backgroundRect == null) return
+        if (!R.bg1 || this.backgroundRect == null) return
         ctx.drawImage(
-            R.bg,
+            R.bg1,
             this.backgroundRect.x,
             this.backgroundRect.y,
             this.backgroundRect.width,
             this.backgroundRect.height
         )
+        if (!this.startTime || !R.bg2) { return }
+        ctx.save()
+        ctx.globalAlpha = Math.abs(((Date.now() - this.startTime) % config.backgroundInterval) - config.backgroundInterval/2) / (config.backgroundInterval/2)
+        ctx.drawImage(
+            R.bg2,
+            this.backgroundRect.x,
+            this.backgroundRect.y,
+            this.backgroundRect.width,
+            this.backgroundRect.height
+        )
+        ctx.restore()
     }
 
     setupCanvas() {
@@ -257,9 +270,9 @@ export class BarGame extends Game {
         this.canvas.width = window.innerWidth
         this.canvas.height = window.innerHeight
 
-        if (!R.bg) return
+        if (!R.bg1) return
         this.backgroundRect = aspectFillRectToBottom(
-            {x: 0, y: 0, width: R.bg.width, height: R.bg.height},
+            {x: 0, y: 0, width: R.bg1.width, height: R.bg1.height},
             {x: 0, y: 0, width: this.canvas.width, height: this.canvas.height}
         )
     }
