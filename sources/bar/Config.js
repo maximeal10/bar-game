@@ -5,7 +5,7 @@ export const config = {
     padding: new Vector2D(0.2, 0.12),
     playerSizeX: 0.30,
     itemSizeX: 0.2,
-    itemUISizeX: 0.3,
+    itemUISizeX: 0.25,
     positinCount: 4,
     itemLifeTime: 1800,
     itemsCount: 3,

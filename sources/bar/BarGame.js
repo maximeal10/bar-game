@@ -213,27 +213,59 @@ export class BarGame extends Game {
                 this.collected(item)
             }
         }
+
+        for (const obj of this.#madeCocktails) {
+            obj.update(dt)
+        }
     }
 
+    #madeCocktails = []
+
+    #isCheatActive = false
     collected(item) {
-        if (this.playerCocktail.isComplete) {
-            this.playerCocktail.reset()
+
+        if (this.#isCheatActive) {
+            this.playerCocktail.glass = this.targetCocktail.glass
+            this.playerCocktail.liquid = this.targetCocktail.liquid
+            this.playerCocktail.topping = this.targetCocktail.topping
+        } else {
+            this.playerCocktail.addCollectedContent(item.content)
         }
-        this.playerCocktail.addCollectedContent(item.content)
+
         if (!this.playerCocktail.isSimilarTo(this.targetCocktail)) {
             this.playerCocktail.reset()
-            console.log("wrong item")
+            // wrong item
         } else {
-            console.log("right item")
+            // right item
         }
         if (this.playerCocktail.isComplete) {
             this.updateTargetCocktail()
+
+            this.#addMadeCocktails(this.playerCocktail.copy())
+            this.playerCocktail.reset()
         }
+    }
+
+    #addMadeCocktails(cocktail) {
+        this.#madeCocktails.unshift(cocktail)
+        for (const cocktailIndex in this.#madeCocktails) {
+            const cocktail = this.#madeCocktails[cocktailIndex]
+            cocktail.sizeX = config.itemSizeX
+            cocktail.targetPos = new Vector2D(
+                cocktail.sizeX * cocktailIndex - config.padding.x + cocktail.sizeX / 5,
+                1 + config.padding.y - cocktail.sizeX / 5
+            )
+        }
+        this.#madeCocktails = this.#madeCocktails.slice(0, 9)
+
     }
 
     render() {
         this.#renderBackground()
         super.render()
+        for (const obj of this.#madeCocktails) {
+            obj.render(this.ctx)
+        }
     }
 
     #renderBackground() {

@@ -6,10 +6,11 @@ import {Vector2D} from "../Vector2D.js"
 import {Sprite} from "../game/Sprite.js"
 import {R} from "./R.js"
 
-export class Cocktail extends  GameObject {
+export class Cocktail extends GameObject {
     glass = null
     liquid = null
     topping = null
+    targetPos = null
 
     #liquidSprite
     #toppingSprite
@@ -22,6 +23,7 @@ export class Cocktail extends  GameObject {
         this.glass = glass || null
         this.liquid = liquid || null
         this.topping = topping || null
+        this.setupSprites()
     }
     
     addCollectedContent(itemContent) {
@@ -101,6 +103,14 @@ export class Cocktail extends  GameObject {
         }
     }
 
+    update(dt) {
+        super.update(dt)
+        if (!this.targetPos) { return }
+        let diff = this.targetPos.subtracting(this.pos)
+        const move = diff.multiplying(dt/300)
+        this.pos.add(move)
+    }
+
     render(ctx) {
         super.render(ctx)
         
@@ -155,5 +165,9 @@ export class Cocktail extends  GameObject {
             )
         }
 
+    }
+
+    copy() {
+        return new Cocktail(new Vector2D(this.pos.x, this.pos.y), this.sizeX, this.withPaper, this.glass, this.liquid, this.topping)
     }
 }
